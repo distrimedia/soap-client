@@ -1,0 +1,6 @@
+vendor
+var
+auth.json
+.phpunit.result.cache
+.env
+composer.lock

@@ -1,0 +1,20 @@
+version: "3"
+services:
+  composer:
+    build:
+      context: ./docker/composer
+    environment:
+      - COMPOSER_CACHE_DIR=/app/var/cache/composer
+      #docker-compose run composer composer install  --ignore-platform-reqs
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: /usr/local/bin/composer
+
+  phpunit:
+    build:
+      context: ./docker/php
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: vendor/bin/phpunit

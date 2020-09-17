@@ -1,0 +1,37 @@
+{
+  "name": "distrimedia/soap-client",
+  "description": "PHP DistriMedia Soap Client",
+  "type": "php-module",
+  "keywords": [
+    "distrimedia",
+    "php",
+    "soap",
+    "api client"
+  ],
+  "authors": [
+    {
+      "name": "Tristan Hofman",
+      "email": "tristan@baldwin.be"
+    }
+  ],
+  "require": {
+    "php": ">=7.3",
+    "ext-soap": "*",
+    "ext-mbstring": "*",
+    "ext-dom": "*",
+    "ext-curl": "*",
+    "ext-simplexml": "*",
+    "ext-json": "*",
+    "spatie/array-to-xml": "^2.13"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.2",
+    "vlucas/phpdotenv": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "DistriMedia\\SoapClient\\": "src",
+      "DistriMedia\\SoapClientTest\\": "tests"
+    }
+  }
+}
