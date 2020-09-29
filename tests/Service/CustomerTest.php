@@ -36,6 +36,7 @@ namespace DistriMedia\SoapClientTest\Service;
 
 use DistriMedia\SoapClient\InvalidCustomerException;
 use DistriMedia\SoapClient\Struct\Customer;
+use DistriMedia\SoapClient\Service\Customer as CustomerService;
 
 class CustomerTest extends TestCase
 {
@@ -75,6 +76,33 @@ class CustomerTest extends TestCase
         $customer->setPostcode1("9000");
 
         $result = $customer->validate();
+        self::assertTrue($result);
+    }
+
+    /**
+     * @covers ::Customer
+     */
+    public function testCustomerChange()
+    {
+        $customer = new Customer();
+
+        $customer->setName("John");
+        $customer->setName2("Doe");
+        $customer->setAddress1("Dendermondsesteenweg 140c");
+        $customer->setCity("Gent");
+        $customer->setCountry("BE");
+        $customer->setEmail("wedoeneenszot@baldwin.be");
+        $customer->setMobile("123456789");
+        $customer->setPostcode1("9000");
+
+        $uri = $_ENV['API_URI'] ?: '';
+        $webshopCode = $_ENV['WEBSHOP_CODE'] ?: '';
+        $password = $_ENV['API_PASSWORD'] ?: '';
+
+
+        $orderService = new CustomerService($uri, $webshopCode, $password);
+        $result = $orderService->changeCustomer($customer, $orderId = '96');
+
         self::assertTrue($result);
     }
 }

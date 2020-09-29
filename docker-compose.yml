@@ -5,7 +5,7 @@ services:
       context: ./docker/composer
     environment:
       - COMPOSER_CACHE_DIR=/app/var/cache/composer
-      #docker-compose run composer composer install  --ignore-platform-reqs
+      #docker-compose run composer install  --ignore-platform-reqs
     volumes:
       - .:/app
     working_dir: /app

@@ -112,7 +112,7 @@ class OrderTest extends TestCase
     {
         $customer = $this->getCustomer();
         $orderLine = $this->getOrderLine();
-        $orderItem = $this->getOrderItem('00212857');
+        $orderItem = $this->getOrderItem('00212859');
 
         $order = new Order();
         $order->setCustomer($customer);
@@ -123,6 +123,7 @@ class OrderTest extends TestCase
 
         $result = $orderService->createOrder($order);
 
+        var_dump($result);
         self::assertInstanceOf(\DistriMedia\SoapClient\Struct\Response\Order::class, $result);
     }
 
