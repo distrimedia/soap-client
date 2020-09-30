@@ -46,7 +46,7 @@ class Inventory extends AbstractResponse
             $result[] = new StockItem($inventoryItem);
         }
 
-        $this->iventory = $result;
+        $this->inventory = $result;
 
         return $this;
     }
