@@ -35,6 +35,7 @@ declare(strict_types=1);
 namespace DistriMedia\SoapClient\Service;
 
 use DistriMedia\SoapClient\InvalidXmlResponseException;
+use Psr\Log\LoggerInterface;
 use Spatie\ArrayToXml\ArrayToXml;
 
 /**
@@ -88,9 +89,11 @@ abstract class AbstractSoapClient
     public function __construct(
         string $uri,
         string $uniqueWebshopID,
-        string $soapPassword
+        string $soapPassword,
+        LoggerInterface $logger = null
     )
     {
+        $this->logger = $logger;
         $this->uri = $uri;
         $this->uniqueWebshopID = $uniqueWebshopID;
         $this->soapPassword = $soapPassword;
@@ -152,6 +155,11 @@ abstract class AbstractSoapClient
 
         if (!isset($result[self::SOAP_BODY][self::SOAP_REQUEST_RESULT])) {
             throw new InvalidXmlResponseException("Invalid SOAP response received");
+        }
+
+        if ($this->logger instanceof LoggerInterface) {
+            $responseXml = ArrayToXml::convert($result[self::SOAP_BODY], self::SOAP_REQUEST_RESULT);
+            $this->logger->critical("request: " . $envelope  . "\nresponse: ". $responseXml);
         }
 
         return $result[self::SOAP_BODY][self::SOAP_REQUEST_RESULT];
