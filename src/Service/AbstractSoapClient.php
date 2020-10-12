@@ -146,8 +146,12 @@ abstract class AbstractSoapClient
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $soapResponse = curl_exec($ch);
-
-        $result = $this::parseSoapResponseToArray($soapResponse);
+        if (is_string($soapResponse)) {
+            $result = $this::parseSoapResponseToArray($soapResponse);
+        } else {
+            $error = curl_error($ch);
+            throw new InvalidXmlResponseException("Soap call failed! {$error}");
+        }
 
         if (!isset($result[self::SOAP_BODY])) {
             throw new InvalidXmlResponseException("Invalid SOAP response received");
