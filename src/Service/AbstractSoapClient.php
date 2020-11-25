@@ -49,6 +49,7 @@ abstract class AbstractSoapClient
     const STATUS_ERROR = 'Error';
     const SOAP_BODY = 'soapBody';
     const SOAP_REQUEST_RESULT = 'SoapRequestResult';
+    const TIMEOUT = 3;
 
     const VALID_ACTION_NAMES = [
         'CreateOrder',
@@ -132,6 +133,7 @@ abstract class AbstractSoapClient
         curl_setopt($ch, CURLOPT_URL, $this->uri);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $envelope);
+        curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
 
         $headers = [
             "Content-type: text/xml;charset=\"utf-8\"",
