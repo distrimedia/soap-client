@@ -83,5 +83,7 @@ class AdditionalDocument  extends AbstractStruct implements StructInterface
         if (empty($this->getBinData())) {
             throw new InvalidAdditionalDocumentException("BinData is a required field");
         }
+
+        return true;
     }
 }
