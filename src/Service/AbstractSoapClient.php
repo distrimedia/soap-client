@@ -169,7 +169,7 @@ abstract class AbstractSoapClient
 
         if ($this->logger instanceof LoggerInterface) {
             $responseXml = ArrayToXml::convert($result[self::SOAP_BODY], self::SOAP_REQUEST_RESULT);
-            $this->logger->critical("request: " . $envelope  . "\nresponse: ". $responseXml);
+            //$this->logger->critical("request: " . $envelope  . "\nresponse: ". $responseXml);
         }
 
         return $result[self::SOAP_BODY][self::SOAP_REQUEST_RESULT];
