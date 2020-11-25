@@ -44,12 +44,12 @@ use Spatie\ArrayToXml\ArrayToXml;
  */
 abstract class AbstractSoapClient
 {
+    CONST TIMEOUT = 10;
     const WEBSHOP_CODE = 'WebshopCode';
     const SOAP_PASSWORD = 'SoapPassword';
     const STATUS_ERROR = 'Error';
     const SOAP_BODY = 'soapBody';
     const SOAP_REQUEST_RESULT = 'SoapRequestResult';
-    const TIMEOUT = 3;
 
     const VALID_ACTION_NAMES = [
         'CreateOrder',
@@ -83,6 +83,8 @@ abstract class AbstractSoapClient
      */
     private $soapPassword;
 
+    private $timeout;
+
     /**
      * AbstractSoapClient constructor.
      * @param string $uri
@@ -91,6 +93,7 @@ abstract class AbstractSoapClient
         string $uri,
         string $uniqueWebshopID,
         string $soapPassword,
+        int $timeout = self::TIMEOUT,
         LoggerInterface $logger = null
     )
     {
@@ -98,6 +101,7 @@ abstract class AbstractSoapClient
         $this->uri = $uri;
         $this->uniqueWebshopID = $uniqueWebshopID;
         $this->soapPassword = $soapPassword;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -133,7 +137,7 @@ abstract class AbstractSoapClient
         curl_setopt($ch, CURLOPT_URL, $this->uri);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $envelope);
-        curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
 
         $headers = [
             "Content-type: text/xml;charset=\"utf-8\"",
