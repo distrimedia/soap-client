@@ -29,7 +29,7 @@ class StockItem
         $this->ean = isset($data[self::EAN]) ? $data[self::EAN] : null;
         $this->pieces = isset($data[self::PIECES]) ? $data[self::PIECES] : null;
         $this->claimed = isset($data[self::CLAIMED]) ? (bool) $data[self::CLAIMED] : null;
-        $this->claimable = isset($data[self::CLAIMABLE]) ? (bool) $data[self::CLAIMABLE] : null;
+        $this->claimable = isset($data[self::CLAIMABLE]) ? (int) $data[self::CLAIMABLE] : null;
         $this->problem = isset($data[self::PROBLEM]) ? $data[self::PROBLEM] : null;
         $this->overdue = isset($data[self::OVERDUE]) ? $data[self::OVERDUE] : null;
         $this->blocked = isset($data[self::BLOCKED]) ? $data[self::BLOCKED] : null;
