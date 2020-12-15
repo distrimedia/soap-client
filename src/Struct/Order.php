@@ -12,6 +12,7 @@ class Order extends AbstractStruct implements StructInterface
     const ORDER_VALUE_ADDED_HANDLING = 'OrderValueAddedHandling';
     const ORDER_LINE = 'OrderLine';
     const ADDITIONAL_DOCUMENTS = 'AdditionalDocuments';
+    const ADDITIONAL_DOCUMENT = 'AdditionalDocument';
     const LABEL_TEXT = 'LabelText';
     const CUSTOMER = 'Customer';
 
@@ -172,9 +173,10 @@ class Order extends AbstractStruct implements StructInterface
         }
 
         if (!empty($docs)) {
+            $data[self::ADDITIONAL_DOCUMENTS] = [];
             foreach ($docs as $key => $doc) {
-                $index = self::CUSTOM_TAG . ':' . self::ADDITIONAL_DOCUMENTS . ':' . $key;
-                $data[$index] = $doc->__toArray();
+                $index = self::CUSTOM_TAG . ':' . self::ADDITIONAL_DOCUMENT . ':' . $key;
+                $data[self::ADDITIONAL_DOCUMENTS][$index] = $doc->__toArray();
             }
         }
 
