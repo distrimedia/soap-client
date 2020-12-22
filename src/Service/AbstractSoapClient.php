@@ -138,7 +138,7 @@ abstract class AbstractSoapClient
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $envelope);
         //curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-
+        
         $headers = [
             "Content-type: text/xml;charset=\"utf-8\"",
             "Accept: text/xml",

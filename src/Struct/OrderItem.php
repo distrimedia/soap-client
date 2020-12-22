@@ -41,7 +41,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     use ArgumentValidatorTrait;
 
     const ORDER_NUMBER = 'OrderNumber';
-    const REFERENCE_NUMBER = 'ReferenceNumber';
+    const REFERENCE_NUMBER = 'Reference';
     const SITE_INDICATION = 'SiteIndication';
     const LANGUAGE = 'Language';
     const CARRIER = 'Carrier';
@@ -154,8 +154,6 @@ class OrderItem extends AbstractStruct implements StructInterface
      */
     public function setSiteIndication(string $siteIndication)
     {
-        $this::validateLength(self::SITE_INDICATION, $siteIndication, 3);
-
         $this->siteIndication = $siteIndication;
         return $this;
     }
@@ -584,7 +582,6 @@ class OrderItem extends AbstractStruct implements StructInterface
         $data = [
             self::ORDER_NUMBER => $this->getOrderNumber(),
             self::REFERENCE_NUMBER => $this->getReferenceNumber(),
-            self::SITE_INDICATION => $this->getSiteIndication(),
             self::LANGUAGE => $this->getLanguage(),
             self::CARRIER => $this->getCarrier(),
             self::SHIPPING_METHOD => $this->getShipmentMethod(),
@@ -608,6 +605,9 @@ class OrderItem extends AbstractStruct implements StructInterface
         ];
 
         $data = array_filter($data);
+
+        //we always send the site indication.
+        $data[self::SITE_INDICATION] = $this->getSiteIndication();
 
         return $data;
     }
