@@ -15,11 +15,11 @@
  *  to newer versions in the future. If you wish to customize the plugin for your
  *  needs please document your changes and make backups before your update.
  *
- *  @category  Baldwin
- *  @package  DistriMediaClient
- *  @author      Tristan Hofman <info@baldwin.be>
- *  @copyright Copyright (c) 2020 Baldwin BV (https://www.baldwin.be)
- *  @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @category  Baldwin
+ * @package  DistriMediaClient
+ * @author      Tristan Hofman <info@baldwin.be>
+ * @copyright Copyright (c) 2020 Baldwin BV (https://www.baldwin.be)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  *  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -34,7 +34,10 @@ declare(strict_types=1);
 
 namespace DistriMedia\SoapClient\Struct;
 
+use DateTime;
 use DistriMedia\SoapClient\Traits\ArgumentValidatorTrait;
+use Exception;
+use InvalidArgumentException;
 
 class OrderItem extends AbstractStruct implements StructInterface
 {
@@ -53,12 +56,11 @@ class OrderItem extends AbstractStruct implements StructInterface
     const DAYS_RETENTION = 'DaysRetention';
     const DAYS_CANCELLATION = 'DaysCancelation'; //typo on the side of distrimedia
     const ORDER_ITEM_MODE = 'OrderItemMode';
-
     const ORDER_ITEM_MODE_NORMAL = 'N';
     const ORDER_ITEM_MODE_STOCKOUT_OrderItem = 'S';
-
     const CURRENCY = 'Currency';
-
+    const NO_DELIVERY_TRUE = 'T';
+    const NO_DELIVERY_FALSE = 'F';
     const NO_DELIVERY_DAY_MONDAY = 'NoDelivery_DayMonday';
     const NO_DELIVERY_DAY_TUESDAY = 'NoDelivery_DayTuesday';
     const NO_DELIVERY_DAY_WEDNESDAY = 'NoDelivery_DayWednesday';
@@ -66,10 +68,8 @@ class OrderItem extends AbstractStruct implements StructInterface
     const NO_DELIVERY_DAY_FRIDAY = 'NoDelivery_DayFriday';
     const NO_DELIVERY_DAY_SATURDAY = 'NoDelivery_DaySaturday';
     const NO_DELIVERY_DAY_SUNDAY = 'NoDelivery_DaySunday';
-
     const REPRESENTATIVE = 'Representative';
     const GOODS_TOTAL_VALUE = 'GoodsTotalValue';
-
     private $OrderNumber;
     private $referenceNumber;
     private $siteIndication;
@@ -113,6 +113,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::ORDER_NUMBER, $OrderNumber, 15);
 
         $this->OrderNumber = $OrderNumber;
+
         return $this;
     }
 
@@ -135,6 +136,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::REFERENCE_NUMBER, $referenceNumber, 15);
 
         $this->referenceNumber = $referenceNumber;
+
         return $this;
     }
 
@@ -155,6 +157,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     public function setSiteIndication(string $siteIndication)
     {
         $this->siteIndication = $siteIndication;
+
         return $this;
     }
 
@@ -177,6 +180,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::SITE_INDICATION, $language, 2);
 
         $this->language = $language;
+
         return $this;
     }
 
@@ -199,6 +203,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::CARRIER, $carrier, 10);
 
         $this->carrier = $carrier;
+
         return $this;
     }
 
@@ -221,6 +226,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::SHIPPING_METHOD, $shipmentMethod, 10);
 
         $this->shipmentMethod = $shipmentMethod;
+
         return $this;
     }
 
@@ -242,6 +248,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     {
         $this::validateLength(self::SHIPPING_METHOD, $currency, 3);
         $this->currency = $currency;
+
         return $this;
     }
 
@@ -263,6 +270,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     {
         $this::validateLength(self::TRANSPORT_REF, $transportRef, 12);
         $this->transportRef = $transportRef;
+
         return $this;
     }
 
@@ -285,6 +293,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::TRANSPORT_NOTA_1, $transportNota1, 50);
 
         $this->transportNota1 = $transportNota1;
+
         return $this;
     }
 
@@ -307,6 +316,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateLength(self::TRANSPORT_NOTA_2, $transportNota2, 50);
 
         $this->transportNota2 = $transportNota2;
+
         return $this;
     }
 
@@ -321,15 +331,16 @@ class OrderItem extends AbstractStruct implements StructInterface
 
     /**
      * Day of delivery
-     * @param \DateTime $daysOfDelivery
+     * @param DateTime $daysOfDelivery
      * @return OrderItem
      */
-    public function setDayOfDelivery(\DateTime $dayOfDelivery)
+    public function setDayOfDelivery(DateTime $dayOfDelivery)
     {
         $this::validateDateInFuture(self::DAY_OF_DELIVERY, $dayOfDelivery);
 
         $result = $dayOfDelivery->format('yyyymmdd');
         $this->daysOfDelivery = $result;
+
         return $this;
     }
 
@@ -352,6 +363,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateInteger(self::DAYS_RETENTION, $daysOfRetention, 999);
 
         $this->daysOfRetention = $daysOfRetention;
+
         return $this;
     }
 
@@ -374,6 +386,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         $this::validateInteger(self::DAYS_CANCELLATION, $daysOfCancellation, 999);
 
         $this->daysOfCancellation = $daysOfCancellation;
+
         return $this;
     }
 
@@ -392,7 +405,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     public function setOrderItemMode(string $OrderItemMode)
     {
         if (in_array($OrderItemMode, [self::ORDER_ITEM_MODE_NORMAL, self::ORDER_ITEM_MODE_STOCKOUT_OrderItem])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     "Invalid OrderItem Mode '%s' defined. Should be %s or %s",
                     $OrderItemMode,
@@ -403,7 +416,19 @@ class OrderItem extends AbstractStruct implements StructInterface
         }
 
         $this->OrderItemMode = $OrderItemMode;
+
         return $this;
+    }
+
+    private function validateNoDeliveryParam(string $param): bool
+    {
+        $options = [self::NO_DELIVERY_TRUE, self::NO_DELIVERY_FALSE];
+        if (in_array($param, $options)) {
+            return true;
+        }
+
+        $optionsString = implode(", ", $options);
+        throw new InvalidArgumentException("No delivery Parameter {$param} can only be one of {$optionsString}");
     }
 
     /**
@@ -415,120 +440,99 @@ class OrderItem extends AbstractStruct implements StructInterface
     }
 
     /**
-     * @param bool $noDeliveryMonday
-     * @return OrderItem
+     * @param string $noDeliveryMonday
+     * @return $this
      */
-    public function setNoDeliveryMonday(bool $noDeliveryMonday)
+    public function setNoDeliveryMonday(string $noDeliveryMonday): self
     {
-        $this->noDeliveryMonday = $noDeliveryMonday;
+        if ($this->validateNoDeliveryParam($noDeliveryMonday)) {
+            $this->noDeliveryMonday = $noDeliveryMonday;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliveryTuesday()
+    public function getNoDeliveryTuesday(): ?string
     {
         return $this->noDeliveryTuesday;
     }
 
-    /**
-     * @param bool $noDeliveryTuesday
-     * @return OrderItem
-     */
-    public function setNoDeliveryTuesday(bool $noDeliveryTuesday)
+    public function setNoDeliveryTuesday(string $noDeliveryTuesday): self
     {
-        $this->noDeliveryTuesday = $noDeliveryTuesday;
+        if ($this->validateNoDeliveryParam($noDeliveryTuesday)) {
+            $this->noDeliveryTuesday = $noDeliveryTuesday;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliveryWednesDay()
+    public function getNoDeliveryWednesDay(): ?string
     {
         return $this->noDeliveryWednesDay;
     }
 
-    /**
-     * @param bool $noDeliveryWednesDay
-     * @return OrderItem
-     */
-    public function setNoDeliveryWednesDay(bool $noDeliveryWednesDay)
+    public function setNoDeliveryWednesDay(string $noDeliveryWednesDay): self
     {
-        $this->noDeliveryWednesDay = $noDeliveryWednesDay;
+        if ($this->validateNoDeliveryParam($noDeliveryWednesDay)) {
+            $this->noDeliveryWednesDay = $noDeliveryWednesDay;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliveryThursday()
+    public function getNoDeliveryThursday(): ?string
     {
         return $this->noDeliveryThursday;
     }
 
-    /**
-     * @param bool $noDeliveryThursday
-     * @return OrderItem
-     */
-    public function setNoDeliveryThursday(bool $noDeliveryThursday)
+    public function setNoDeliveryThursday(string $noDeliveryThursday): self
     {
-        $this->noDeliveryThursday = $noDeliveryThursday;
+        if ($this->validateNoDeliveryParam($noDeliveryThursday)) {
+            $this->noDeliveryThursday = $noDeliveryThursday;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliveryFriday()
+    public function getNoDeliveryFriday(): ?string
     {
         return $this->noDeliveryFriday;
     }
 
-    /**
-     * @param bool $noDeliveryFriday
-     * @return OrderItem
-     */
-    public function setNoDeliveryFriday(bool $noDeliveryFriday)
+    public function setNoDeliveryFriday(string $noDeliveryFriday): self
     {
-        $this->noDeliveryFriday = $noDeliveryFriday;
+        if ($this->validateNoDeliveryParam($noDeliveryFriday)) {
+            $this->noDeliveryFriday = $noDeliveryFriday;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliverySaturday()
+    public function getNoDeliverySaturday(): ?string
     {
         return $this->noDeliverySaturday;
     }
 
-    /**
-     * @param bool $noDeliverySaturday
-     * @return OrderItem
-     */
-    public function setNoDeliverySaturday(bool $noDeliverySaturday)
+    public function setNoDeliverySaturday(string $noDeliverySaturday): self
     {
-        $this->noDeliverySaturday = $noDeliverySaturday;
+        if ($this->validateNoDeliveryParam($noDeliverySaturday)) {
+            $this->noDeliverySaturday = $noDeliverySaturday;
+        }
+
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getNoDeliverySunday()
+    public function getNoDeliverySunday(): ?string
     {
         return $this->noDeliverySunday;
     }
 
-    /**
-     * @param bool $noDeliverySunday
-     * @return OrderItem
-     */
-    public function setNoDeliverySunday(bool $noDeliverySunday)
+    public function setNoDeliverySunday(string $noDeliverySunday): self
     {
-        $this->noDeliverySunday = $noDeliverySunday;
+        if ($this->validateNoDeliveryParam($noDeliverySunday)) {
+            $this->noDeliverySunday = $noDeliverySunday;
+        }
+
         return $this;
     }
 
@@ -549,6 +553,7 @@ class OrderItem extends AbstractStruct implements StructInterface
         self::validateFloat(self::GOODS_TOTAL_VALUE, $goodsTotalValue, 9999.99);
 
         $this->goodsTotalValue = $goodsTotalValue;
+
         return $this;
     }
 
@@ -568,6 +573,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     {
         $this::validateLength(self::REPRESENTATIVE, $representative, 50);
         $this->representative = $representative;
+
         return $this;
     }
 
@@ -601,7 +607,7 @@ class OrderItem extends AbstractStruct implements StructInterface
             self::NO_DELIVERY_DAY_SATURDAY => $this->getNoDeliverySaturday(),
             self::NO_DELIVERY_DAY_SUNDAY => $this->getNoDeliverySunday(),
             self::GOODS_TOTAL_VALUE => $this->getGoodsTotalValue(),
-            self::REPRESENTATIVE => $this->getRepresentative()
+            self::REPRESENTATIVE => $this->getRepresentative(),
         ];
 
         $data = array_filter($data);
@@ -615,7 +621,7 @@ class OrderItem extends AbstractStruct implements StructInterface
     public function validate(): bool
     {
         if (empty($this->getOrderNumber())) {
-            throw new \Exception("Required Order Item Number not defined");
+            throw new Exception("Required Order Item Number not defined");
         }
 
         return true;
