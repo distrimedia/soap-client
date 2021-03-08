@@ -138,7 +138,7 @@ abstract class AbstractSoapClient
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $envelope);
         //curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
-        
+
         $headers = [
             "Content-type: text/xml;charset=\"utf-8\"",
             "Accept: text/xml",
@@ -180,7 +180,9 @@ abstract class AbstractSoapClient
         $responseArray = [];
 
         // SimpleXML seems to have problems with the colon ":" in the <xxx:yyy> response tags, so take them out
-        $soapResponse = preg_replace("/(<\/?)(\w+):([^>]*>)/", '$1$2$3', $soapResponse);
+        $soapResponse = preg_replace('/(<\/?)(\w+):([^>]*>)/', '$1$2$3', $soapResponse);
+
+        $soapResponse = self::utf8_for_xml($soapResponse);
 
         if (!empty($soapResponse)) {
             $xml = simplexml_load_string($soapResponse);
@@ -189,6 +191,11 @@ abstract class AbstractSoapClient
         }
 
         return $responseArray;
+    }
+
+    private static function utf8_for_xml($string)
+    {
+        return preg_replace ('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $string);
     }
 
     /**
