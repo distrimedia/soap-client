@@ -1,5 +1,10 @@
 
 ## Current
+ * 2021-04-22 10:04:14 | Fixed to values of NO_DELIVERY_DAYS [Tristan Hofman (baldwinonlightspeed)]
+ * 2021-02-25 15:02:21 | ISSUE-1 fixes issue with value needing to be T or F instead of a boolean [Tristan Hofman (baldwinonlightspeed)]
+
+## v1.0.1
+ * 2021-03-08 14:03:10 | added changelog [Tristan Hofman (baldwinonlightspeed)]
  * 2021-03-08 14:03:05 | add extra utf8 validation [Tristan Hofman (baldwinonlightspeed)]
 
 ## v1.0.0
